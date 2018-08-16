@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ user_obj.username }}的粉丝</title>
+</head>
+<body>
+<div>
+	{% for row in fans_obj %}
+		<div>
+		<a>{{ row.follower.userid }}</a>
+		<a>{{ row.follower.username }}</a>
+		<a>{{ row.follower.gender }}</a>
+		<a>{{ row.follower.institute }}</a>
+		<a>{{ row.follower.major }}</a>
+		</div>
+	{% endfor %}
+</div>
+</body>
+</html>

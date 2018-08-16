@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ group_obj.group_name }}-小组详情</title>
+</head>
+<body>
+<div>
+	<p>小组组名:{{ group_obj.group_name }}</p>
+	<p>小组简介:{{ group_obj.introduction }}</p>
+	<p>小组公告:{{ group_obj.public_notice }}</p>
+	<p>小组标签:{{ group_obj.grouptag.grouptag_name }}</p>
+	<p>活动数量:{{ group_obj.activities_count }}</p>
+	<p>创建时间:{{ group_obj.create_time }}</p>
+</div>
+<div>
+	{% if is_creator %}
+		<button type="button" class="delete-group-button">解散小组</button>
+	{% endif %}
+</div>
+<div>
+	<p><a>小组成员({{ group_obj.member_count }})</a>
+		{% if is_creator %}
+			<button type="button" class="add-member-button">邀请成员</button>
+		{% elif is_in %}
+			<button type="button" class="quit-button">退出小组</button>
+		{% else %}
+			<button type="button" class="join-in-button">申请加入</button>
+		{% endif %}
+	</p>
+	<p>创建者:{{ group_obj.group_owner.username }}</p>
+	{% for member in member_obj %}
+		<p>{{ member.member.username }}-{{ member.add_time }}</p>
+	{% endfor %}
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>新建笔记</title>
+</head>
+<body>
+<div>
+	<form class="note-form" action="/note/new/" method="post">
+		{% csrf_token %}
+		<div>
+			<span>笔记标题</span><input type="text" class="title" name="title"/>
+		</div>
+		<div>
+			<span>笔记简介</span><input type="text"class="summary" name="summary"/>
+		</div>
+		<div>
+			<span>笔记标签</span>
+			<select name="tag">
+				{% for tag in tag_obj %}
+				<option value="{{ tag.notetag_id }}">{{ tag.notetag_name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div>
+			<span>阅读权限</span>
+			<select name="limit">
+				{% for limit in limit_obj %}
+				<option value="{{ limit.limitid }}">{{ limit.limit_type }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div>
+			<span>正文内容</span>
+			<textarea id="content" class="content" name="content"></textarea>
+		</div>
+		<button type="button" class="save-button">保存</button>
+		<button type="button" class="cancel-button">取消</button>
+	</form>
+</div>
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script src="/static/kindeditor/kindeditor-all.js"></script>
+<script type="text/javascript">
+    KindEditor.ready(function (k) {
+        window.editor = k.create('textarea[id="content"]', {
+            resizeType: 0,
+            allowImageRemote: false,
+            filePostName: "file",
+            uploadJson: "/upload/",
+			afterBlur: function () {
+				this.sync();
+            }
+        });
+    });
+    $(function () {
+		$('.save-button').click(function () {
+			$.ajax({
+				url: "/note/new/",
+				type: "POST",
+				data: $(".note-form").serialize(),
+				success: function (data) {
+				    var obj = JSON.parse(data);
+					if (obj.status == "success") {
+					    var userid = obj.userid;
+					    location.href = "/note/user-" + userid + "/";
+					} else if (obj.status == "fail") {
+					    alert(obj.error);
+					} else if (obj.status == "unauthorized") {
+					    location.href = "/login/";
+					}
+                }
+			});
+        });
+		$('.cancel-button').click(function () {
+			history.back(-1);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>笔记-{{ user.username }}的收藏</title>
+</head>
+<body>
+{% for note in note_obj %}
+	<a href="/note/{{ note.noteid_id }}/">{{ note.noteid.title }}</a>
+{% endfor %}
+</body>
+</html>

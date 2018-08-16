@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>创建小组</title>
+</head>
+<body>
+<div>
+	<form class="form">
+		{% csrf_token %}
+		<p>
+			<a>小组组名</a>
+			<input type="text" name="group_name"/>
+		</p>
+		<p>
+			<a>小组简介</a>
+			<input type="text" name="introduction"/>
+		</p>
+		<p>
+			<a>小组标签</a>
+			<select name="group_tag">
+				{% for tag in group_tag_obj %}
+					<option value="{{ tag.grouptag_id }}">{{ tag.grouptag_name }}</option>
+				{% endfor %}
+			</select>
+		</p>
+		<button type="button" class="create-button">创建</button>
+		<button type="button" class="cancel-button">取消</button>
+	</form>
+</div>
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.create-button').click(function () {
+            $.ajax({
+                url: '/group/new/',
+                type: 'POST',
+                data: $('.form').serialize(),
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 'success') {
+                        var userid = obj.userid;
+                        location.href = '/group/user-' + userid + '/';
+                    } else if (obj.status == 'fail') {
+                        alert(obj.error);
+                    } else if (obj.status == 'group_tag') {
+                        location.href = '/login/';
+                    }
+                }
+            });
+        });
+        $('.cancel-button').click(function () {
+            history.back(-1);
+        });
+    });
+</script>
+</body>
+</html>

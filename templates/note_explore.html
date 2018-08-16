@@ -1,0 +1,56 @@
+{% load filter %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>笔记-发现更多</title>
+	<style>
+		.condition a {
+			display: inline-block;
+			padding: 3px 5px;
+			border: 1px solid #dddddd;
+			margin: 5px;
+		}
+
+		.condition a.active {
+			background-color: yellow;
+		}
+	</style>
+</head>
+<body>
+{% if kwargs.keyword %}
+<input type="text" class="keyword" placeholder="查询关键词" value="{{ kwargs.keyword }}">
+{% else %}
+<input type="text" class="keyword" placeholder="查询关键词">
+{% endif %}
+<button type="button" class="search-button">查询</button>
+<div class="condition">
+	<div>
+		<label>笔记标签</label>
+		{% filter_all kwargs.keyword 'tag_obj_id' kwargs %}
+		{% filter_tag kwargs.keyword tag_obj kwargs %}
+	</div>
+	<div>
+		<label>排序规则</label>
+		{% filter_sort kwargs.keyword sort_select kwargs %}
+	</div>
+</div>
+<div>
+	<h3>搜索结果</h3>
+	{% for note in note_obj %}
+		<a href="/note/{{ note.noteid }}/">{{ note.title }}</a>
+	{% endfor %}
+</div>
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.search-button').click(function () {
+            var keyword = $('.keyword').val();
+            location.href = '/note/explore/?keyword=' + keyword + '&tag_id=0&sort_by=0'
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ user_obj.username }}的小组</title>
+</head>
+<body>
+<div>
+	<p>我创建的小组</p>
+	{% if user_group_obj %}
+		{% for group in user_group_obj %}
+			<p>
+				<a href="/group/{{ group.groupid }}/">小组组名:{{ group.group_name }}</a><a>组长:{{ group.group_owner.username }}</a><a>创建时间:{{ group.create_time }}</a>
+			</p>
+		{% endfor %}
+	{% else %}
+		<p>暂无创建的小组</p>
+	{% endif %}
+</div>
+<div>
+	<p>我加入的小组</p>
+	{% if group_obj %}
+		{% for group in group_obj %}
+			<p>
+				<a href="/group/{{ group.group.groupid }}/">小组组名:{{ group.group.group_name }}</a><a>组长:{{ group.group.group_owner.username }}</a><a>创建时间:{{ group.group.create_time }}</a>
+			</p>
+		{% endfor %}
+	{% else %}
+		<p>暂无加入小组</p>
+	{% endif %}
+</div>
+<div>
+	<a href="/group/new/">创建小组</a>
+</div>
+</body>
+</html>

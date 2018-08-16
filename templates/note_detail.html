@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ note_obj.title }}-{{ note_obj.note_user.username }}的笔记</title>
+</head>
+<body>
+<h3>{{ note_obj.title }}</h3>
+<p>
+	<a>{{ note_obj.note_user.username }}</a>
+	<a>创建于{{ note_obj.create_time }}</a>
+</p>
+<div>
+	{% autoescape off %}
+		{{ note_obj.content }}
+	{% endautoescape %}
+</div>
+{% if is_author %}
+	<a href="/note/{{ note_obj.noteid }}/edit/">编辑</a>
+{% elif is_fond %}
+	<button type="button" class="cancel-fond-button">已收藏</button>
+{% else %}
+	<button type="button" class="fond-button">收藏</button>
+{% endif %}
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.fond-button').click(function () {
+            $.ajax({
+                url: '/note/fond/',
+                type: 'POST',
+                data: {
+                    'noteid': {{ note_obj.noteid }},
+                    'userid': {{ note_obj.note_user_id }}
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 'success') {
+                        location.reload();
+                    } else if (obj.status == 'fail') {
+                        alert(obj.error);
+                    } else if (obj.status == 'unauthorized') {
+                        location.href = '/login/';
+                    }
+                }
+            });
+        });
+        $('.cancel-fond-button').click(function () {
+            $.ajax({
+                url: '/note/cancel_fond/',
+                type: 'POST',
+                data: {
+                    'noteid': {{ note_obj.noteid }},
+                    'userid': {{ note_obj.note_user_id }}
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 'success') {
+                        location.reload();
+                    } else if (obj.status == 'fail') {
+                        alert(obj.error);
+                    } else if (obj.status == 'unauthorized') {
+                        location.href = '/login/';
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

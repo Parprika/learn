@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ user_obj.username }}的关注</title>
+</head>
+<body>
+<div class="follows">
+	{% for row in follows_obj %}
+		<div>
+			<a>{{ row.user.userid }}</a>
+			<a>{{ row.user.username }}</a>
+			<a>{{ row.user.gender }}</a>
+			<a>{{ row.user.institute }}</a>
+			<a>{{ row.user.major }}</a>
+		</div>
+	{% endfor %}
+</div>
+<div>
+	<form class="form" action="/relationship/search/" method="post" onkeydown="if(event.keyCode==13){return false;}">
+		{% csrf_token %}
+		<select name="select">
+			<option value="userid">学号</option>
+			<option value="username">姓名</option>
+		</select>
+		<input type="text" name="keyword">
+		<button class="search-button" type="button">搜索</button>
+	</form>
+	<div>
+		<h3>搜索结果</h3>
+		<span class="count">无搜索结果</span>
+		<table border="1">
+			<thead>
+			<tr>
+				<th>学号</th>
+				<th>姓名</th>
+				<th>性别</th>
+				<th>学院</th>
+				<th>专业</th>
+				<th>操作</th>
+			</tr>
+			</thead>
+			<tbody class="result">
+			<tr>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script>
+    $(function () {
+        $('.search-button').click(function () {
+            $.ajax({
+                url: '/relationship/search/',
+                type: 'POST',
+                data: $('.form').serialize(),
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    var count = obj.count;
+                    $('.count').html("搜索到" + count + "条记录");
+                    $('.result').html("");
+                    if (obj.status) {
+                        var userlist = obj.data;
+                        var tr = $('<tr></tr>');
+                        var td = $('<td></td>+<td></td>+<td></td>+<td></td>+<td></td>');
+                        for (var i = 0; i < userlist.length; i++) {
+                            $(td[0]).html(userlist[i].userid);
+                            $(td[1]).html(userlist[i].username);
+                            $(td[2]).html(userlist[i].gender);
+                            $(td[3]).html(userlist[i].institute);
+                            $(td[4]).html(userlist[i].major);
+                            for (j = 0; j < td.length; j++) {
+                                $(tr).append(td[j]);
+                            }
+                            if (userlist[i].is_followed) {
+                                tr.append('<td><button class="cancel-follow-button" type="button">已关注</button></td>');
+                            } else {
+                                tr.append('<td><button class="follow-button" type="button">关注</button></td>');
+                            }
+                            tr.attr("userid", userlist[i].userid);
+                            $('.result').append(tr);
+                        }
+                    } else {
+
+                    }
+                }
+            });
+        });
+        $(document).on("click", ".follow-button", function () {
+            var userid = $(this).parent().parent().attr('userid');
+            $.ajax({
+                url: '/relationship/follow/',
+                type: 'POST',
+                data: {
+                    'followid': userid
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == "success") {
+                        $('.follow-button').html("已关注");
+                        $('.follow-button').attr("class", "cancel-follow-button");
+                    } else if (obj.status == "fail") {
+                        alert(obj.data);
+                    } else if (obj.status == "unauthorized") {
+                        location.href = "/login/";
+                    }
+                }
+            });
+        });
+        $(document).on("click", ".cancel-follow-button", function () {
+            var userid = $(this).parent().parent().attr('userid');
+            $.ajax({
+                url: '/relationship/cancel_follow/',
+                type: 'POST',
+                data: {
+                    'followid': userid
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == "success") {
+                        $('.cancel-follow-button').html("关注");
+                        $('.cancel-follow-button').attr("class", "follow-button");
+                    } else if (obj.status == "fail") {
+                        alert(obj.data)
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+	<title>{{ user_obj.username }}的笔记</title>
+	<style>
+		.shade {
+			position: fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			background: black;
+			opacity: 0.6;
+			z-index: 100;
+		}
+		.delete-mode {
+			position: fixed;
+			height: 300px;
+			width: 400px;
+			top: 100px;
+			left: 50%;
+			margin-left: -200px;
+			border: 1px solid red;
+			background: white;
+			z-index: 100;
+		}
+		.hide {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+<div>
+	{% for note in note_obj %}
+		<p noteid="{{ note.noteid }}">
+			<a href="/note/{{ note.noteid }}/">标题:{{ note.title }}</a>
+			<a>作者:{{ note.note_user.username }}</a>
+			<a>简介:{{ note.summary }}</a>
+			<a>阅读权限:{{ note.readlimit.limit_type }}</a>
+			<a>笔记标签:{{ note.notetag.notetag_name }}</a>
+			<a>创建时间:{{ note.create_time }}</a>
+			<a>最后编辑时间:{{ note.last_edit_time }}</a>
+			<a>阅读量:{{ note.read_count }}</a>
+			<a>收藏量:{{ note.fond_count }}</a>
+			<a href="/note/{{ note.noteid }}/edit/">编辑</a>
+			<button class="delete-button">删除</button>
+		</p>
+	{% endfor %}
+</div>
+<div>
+	<a href="/note/new/">新建笔记</a>
+	<a href="/note/explore/">发现更多</a>
+</div>
+<div class="shade hide"></div>
+<div class="delete-mode hide">
+	<p>删除操作确定后无法撤销,确定删除?</p>
+	<div>
+		<button class="confirm-button">确定</button>
+		<button class="cancel-button">取消</button>
+	</div>
+</div>
+<script src="/static/js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+	$(function () {
+		$('.delete-button').click(function () {
+			$('.shade, .delete-mode').removeClass('hide');
+			var noteid = $(this).parent().attr('noteid');
+			$('.delete-mode').attr('noteid', noteid);
+        });
+		$('.cancel-button').click(function () {
+			$('.shade, .delete-mode').addClass('hide');
+        });
+		$('.confirm-button').click(function () {
+		    var noteid = $(this).parent().parent().attr('noteid');
+			$.ajax({
+				url: '/note/delete/',
+				type: 'POST',
+				data: {
+				    'noteid': noteid
+				},
+				success: function (data) {
+				    var obj = JSON.parse(data);
+				    if (obj.status == 'success') {
+				        location.reload();
+					} else if (obj.status == 'fail') {
+				        alert(obj.error);
+					} else if (obj.status == 'unauthorized') {
+				        location.href = '/login/';
+					}
+                }
+			})
+        })
+    });
+</script>
+</body>
+</html>
