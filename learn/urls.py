@@ -19,14 +19,26 @@ from django.views.static import serve
 from django.conf import settings
 from web import views
 from utils import kindeditor
+from utils import relationship
 
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('login/', views.login),
+	path('logout/', views.logout),
 	path('index/', views.index),
-	path('relationship/', include('relationship.urls')),
-	path('note/', include('note.urls')),
+	path('n/', include('note.urls')),
 	path('upload/', kindeditor.upload),
-	re_path('media/(?P<path>.*)/', serve, {'document_root': settings.MEDIA_ROOT}),
-	path('group/', include('group.urls')),
+	re_path('media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
+	path('g/', include('group.urls')),
+	path('search/', include('search.urls')),
+	path('follow/', relationship.follow),
+	path('cancel_follow/', relationship.cancel_follow),
+	re_path('u/(?P<userid>\d+)/message/', views.message),
+	re_path('u/(?P<userid>\d+)/notice/', views.notice),
+	re_path('u/(?P<userid>\d+)/note/', views.user_note),
+	re_path('u/(?P<userid>\d+)/fond/', views.user_fond),
+	re_path('u/(?P<userid>\d+)/follows/', views.user_follows),
+	re_path('u/(?P<userid>\d+)/fans/', views.user_fans),
+	re_path('u/(?P<userid>\d+)/group/', views.user_group),
+	re_path('u/(?P<userid>\d+)/activity/', views.user_activity),
 ]

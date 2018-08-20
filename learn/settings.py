@@ -37,7 +37,6 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'web.apps.WebConfig',
 	'repository',
-	'relationship',
 	'note',
 	'group',
 ]
