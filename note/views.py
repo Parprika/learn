@@ -1,20 +1,14 @@
 import json
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from repository import models
+from utils.initialization import Initialization
 
 
 # Create your views here.
-def user_note(request, userid):
-	if request.method == 'GET':
-		note_obj = models.Notes.objects.filter(note_user=userid)
-		user_obj = models.UserInfo.objects.filter(userid=userid).first()
-		return render(request, 'user_note.html', {'note_obj': note_obj, 'user_obj': user_obj})
-
-
 def note_new(request):
 	"""
 	创建新笔记
@@ -22,9 +16,10 @@ def note_new(request):
 	:return:
 	"""
 	if request.method == 'GET':
-		tag_obj = models.NoteTag.objects.all()
-		limit_obj = models.ReadLimit.objects.all()
-		return render(request, 'note_new.html', {'tag_obj': tag_obj, 'limit_obj': limit_obj})
+		data = Initialization(request, request.session.get('userid')).get_min()
+		tags = models.NoteTag.objects.all()
+		limits = models.ReadLimit.objects.all()
+		return render(request, 'note_new.html', {'data': data, 'tags': tags, 'limits': limits})
 	if request.method == 'POST':
 		ret = {'status': 'fail', 'error': None}
 		userid = request.session.get('userid')
@@ -48,7 +43,6 @@ def note_new(request):
 						note_count = models.UserInfo.objects.get(userid=userid).notes_count
 						models.UserInfo.objects.filter(userid=userid).update(notes_count=note_count + 1)
 						ret['status'] = 'success'
-						ret['userid'] = userid
 				except Exception as e:
 					ret['error'] = e.args
 		else:
@@ -67,16 +61,17 @@ def note_detail(request, noteid):
 		is_author = False
 		is_fond = False
 		userid = request.session.get('userid')
-		note_obj = models.Notes.objects.get(noteid=noteid)
-		if userid == note_obj.note_user_id:
+		data = Initialization(request, request.session.get('userid')).get_min()
+		note = models.Notes.objects.get(noteid=noteid)
+		if userid == note.note_user_id:
 			is_author = True
 		else:
 			read_count = models.Notes.objects.get(noteid=noteid).read_count
 			models.Notes.objects.filter(noteid=noteid).update(read_count=read_count + 1)
-		fond_obj = models.UserFondNotes.objects.filter(noteid_id=noteid, userid_id=userid)
-		if fond_obj:
+		fond = models.UserFondNotes.objects.filter(noteid_id=noteid, userid_id=userid)
+		if fond:
 			is_fond = True
-		return render(request, 'note_detail.html', {'note_obj': note_obj, 'is_author': is_author, 'is_fond': is_fond})
+		return render(request, 'note_detail.html', {'data': data, 'note': note, 'is_author': is_author, 'is_fond': is_fond})
 
 
 def note_edit(request, noteid):
@@ -87,10 +82,14 @@ def note_edit(request, noteid):
 	:return:
 	"""
 	if request.method == 'GET':
-		note_obj = models.Notes.objects.get(noteid=noteid)
-		tag_obj = models.NoteTag.objects.all()
-		limit_obj = models.ReadLimit.objects.all()
-		return render(request, 'note_edit.html', {'note_obj': note_obj, 'tag_obj': tag_obj, 'limit_obj': limit_obj})
+		data = Initialization(request, request.session.get('userid')).get_min()
+		note = models.Notes.objects.get(noteid=noteid)
+		tags = models.NoteTag.objects.all()
+		limits = models.ReadLimit.objects.all()
+		if note.note_user_id == request.session.get('userid'):
+			return render(request, 'note_edit.html', {'data': data, 'note': note, 'tags': tags, 'limits': limits})
+		else:
+			return redirect('/login/')
 	if request.method == 'POST':
 		ret = {'status': 'fail', 'error': None}
 		userid = request.session.get('userid')
@@ -113,7 +112,6 @@ def note_edit(request, noteid):
 					with transaction.atomic():
 						models.Notes.objects.filter(noteid=request.POST.get('noteid')).update(**note_dict)
 						ret['status'] = 'success'
-						ret['userid'] = userid
 				except Exception as e:
 					ret['error'] = e.args
 		else:
@@ -189,19 +187,6 @@ def note_explore(request):
 		tag_obj = models.NoteTag.objects.all()
 		return render(request, 'note_explore.html',
 					  {'note_obj': note_obj, 'tag_obj': tag_obj, 'sort_select': sort_select, 'kwargs': kwargs})
-
-
-def user_fond_note(request, userid):
-	"""
-	查看收藏笔记
-	:param request:
-	:param userid: 用户学号
-	:return:
-	"""
-	note_obj = models.UserFondNotes.objects.filter(userid_id=userid).order_by('-fond_time')
-	user_obj = models.UserInfo.objects.get(userid=userid)
-	return render(request, 'note_fond.html', {'note_obj': note_obj, 'user': user_obj})
-
 
 @csrf_exempt
 def fond(request):
