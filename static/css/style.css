@@ -1,0 +1,112 @@
+select.choice {
+    display: block !important;
+    height: 38px;
+    padding: 8px 15px;
+    border: 1px solid #e6e6e6;
+    text-align: center;
+    line-height: 20px;
+}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+.header {
+    width: 720px;
+    margin: 0 auto;
+    height: 100px;
+    padding-top: 20px;
+    position: relative;
+}
+
+.user-img {
+    float: left;
+    margin-left: 50px;
+}
+
+.user-img a img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.user-info {
+    padding-left: 25px;
+    margin-left: 126px;
+    margin-top: 15px;
+}
+
+.user-info > a {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: #008ead;
+    height: 40px;
+    padding-left: 18px;
+}
+
+.user-info ul {
+    float: left;
+    border-right: 1px solid #d3d3d3;
+}
+
+.user-info ul:last-child {
+    border: 0;
+}
+
+.user-info li {
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+.user-info li a {
+    font-size: 14px;
+    color: #969696;
+    line-height: 20px;
+}
+
+.follow {
+    position: absolute;
+    top: 50%;
+    margin-top: -21px;
+    margin-left: 560px;
+}
+
+.main {
+    width: 720px;
+    margin: 0 auto;
+}
+
+.card {
+    padding-top: 30px;
+    padding-bottom: 60px;
+}
+
+.badge {
+    position: relative;
+    display: inline-block;
+    padding: 0 6px;
+    font-size: 12px;
+    text-align: center;
+    background-color: #fff;
+    color: #008ead;
+    border-radius: 2px;
+    height: 18px;
+    line-height: 18px;
+    top: 50%;
+    margin: -8px 6px 0;
+    left: 5px;
+}
+
+.hide {
+    display: none;
+}
