@@ -1,0 +1,19 @@
+<script type="text/javascript">
+    $(function () {
+        $('.user-note').click(function () {
+            location.href = '/u/{{ data.info.userid }}/note/'
+        });
+        $('.user-fond').click(function () {
+            location.href = '/u/{{ data.info.userid }}/fond/'
+        });
+        $('.user-group').click(function () {
+            location.href = '/u/{{ data.info.userid }}/group/'
+        });
+        $('.user-follow').click(function () {
+            location.href = '/u/{{ data.info.userid }}/follows/'
+        });
+        $('.user-fans').click(function () {
+            location.href = '/u/{{ data.info.userid }}/fans/'
+        });
+    });
+</script>

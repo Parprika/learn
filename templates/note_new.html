@@ -1,82 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	{% load staticfiles %}
-	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
-	<title>新建笔记</title>
-</head>
-<body>
-<div>
-	<form class="note-form" action="/note/new/" method="post">
-		{% csrf_token %}
-		<div>
-			<span>笔记标题</span><input type="text" class="title" name="title"/>
-		</div>
-		<div>
-			<span>笔记简介</span><input type="text"class="summary" name="summary"/>
-		</div>
-		<div>
-			<span>笔记标签</span>
-			<select name="tag">
-				{% for tag in tag_obj %}
-				<option value="{{ tag.notetag_id }}">{{ tag.notetag_name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<div>
-			<span>阅读权限</span>
-			<select name="limit">
-				{% for limit in limit_obj %}
-				<option value="{{ limit.limitid }}">{{ limit.limit_type }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<div>
-			<span>正文内容</span>
-			<textarea id="content" class="content" name="content"></textarea>
-		</div>
-		<button type="button" class="save-button">保存</button>
-		<button type="button" class="cancel-button">取消</button>
-	</form>
-</div>
-<script src="/static/js/jquery-1.12.4.js"></script>
-<script src="/static/kindeditor/kindeditor-all.js"></script>
-<script type="text/javascript">
-    KindEditor.ready(function (k) {
-        window.editor = k.create('textarea[id="content"]', {
-            resizeType: 0,
-            allowImageRemote: false,
-            filePostName: "file",
-            uploadJson: "/upload/",
-			afterBlur: function () {
-				this.sync();
-            }
-        });
-    });
-    $(function () {
-		$('.save-button').click(function () {
-			$.ajax({
-				url: "/note/new/",
-				type: "POST",
-				data: $(".note-form").serialize(),
-				success: function (data) {
-				    var obj = JSON.parse(data);
-					if (obj.status == "success") {
-					    var userid = obj.userid;
-					    location.href = "/note/user-" + userid + "/";
-					} else if (obj.status == "fail") {
-					    alert(obj.error);
-					} else if (obj.status == "unauthorized") {
-					    location.href = "/login/";
-					}
+{% extends 'top_menu.html' %}
+{% block title %}新建笔记 - 学聊{% endblock %}
+{% block css %}
+	<link rel="stylesheet" href="/static/css/style.css">
+	<script src="/static/kindeditor/kindeditor-all.js"></script>
+	<script type="text/javascript">
+        KindEditor.ready(function (k) {
+            window.editor = k.create('textarea[id="content"]', {
+                height: 380,
+                resizeType: 0,
+                allowImageRemote: false,
+                filePostName: "file",
+                uploadJson: "/upload/",
+                afterBlur: function () {
+                    this.sync();
                 }
-			});
+            });
         });
-		$('.cancel-button').click(function () {
-			history.back(-1);
+	</script>
+{% endblock %}
+{% block content %}
+	<div class="main card">
+		<form id="form" class="layui-form layui-form-pane" action="/n/new/" method="post">
+			{% csrf_token %}
+			<div class="layui-form-item">
+				<label class="layui-form-label">笔记标题</label>
+				<div class="layui-input-block">
+					<input name="title" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">笔记简介</label>
+				<div class="layui-input-block">
+					<input name="summary" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">笔记标签</label>
+				<div class="layui-input-block">
+					<select class="choice" name="tag">
+						{% for tag in tags %}
+							<option value="{{ tag.notetag_id }}">{{ tag.notetag_name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">阅读权限</label>
+				<div class="layui-input-block">
+					<select class="choice" name="limit">
+						{% for limit in limits %}
+							<option value="{{ limit.limitid }}">{{ limit.limit_type }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">笔记内容</label>
+				<div class="layui-input-block">
+					<textarea id="content" class="layui-textarea" name="content"></textarea>
+				</div>
+			</div>
+			<div style="float: right;">
+				<button type="button" id="save-button" class="layui-btn layui-btn-normal layui-btn-radius">保存</button>
+				<button type="button" id="cancel-button" class="layui-btn layui-btn-primary layui-btn-radius">取消
+				</button>
+			</div>
+		</form>
+	</div>
+{% endblock %}
+{% block script %}
+	<script src="/static/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript">
+        $(function () {
+            $('#save-button').click(function () {
+                $.ajax({
+                    url: "/n/new/",
+                    type: "POST",
+                    data: $("#form").serialize(),
+                    success: function (data) {
+                        var obj = JSON.parse(data);
+                        if (obj.status == "success") {
+                            location.href = "/u/{{ data.userid }}/note/";
+                        } else if (obj.status == "fail") {
+                            alert(obj.error);
+                        } else if (obj.status == "unauthorized") {
+                            location.href = "/login/";
+                        }
+                    }
+                });
+            });
+            $('#cancel-button').click(function () {
+                history.back(-1);
+            });
         });
-    });
-</script>
-</body>
-</html>
+	</script>
+	<script type="text/javascript">
+        layui.use('form', function () {
+            var form = layui.form;
+            form.render();
+        });
+	</script>
+{% endblock %}

@@ -1,34 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	{% load staticfiles %}
-	<link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
-	<title>首页-学聊</title>
-</head>
-<body>
-<div>
-	{% for info in userinfo %}
-		<p>学号:{{ info.userid }}</p>
-		<p>姓名:{{ info.username }}</p>
-		<p>性别:{{ info.gender }}</p>
-		<p>籍贯:{{ info.native_place }}</p>
-		<p>学院:{{ info.institute }}</p>
-		<p>专业:{{ info.major }}</p>
-		<p>关注数量:{{ info.follow_count }}</p>
-		<p>粉丝数量:{{ info.fans_count }}</p>
-		<p>笔记数量:{{ info.notes_count }}</p>
-		<p>收藏笔记数量:{{ info.fond_notes_count }}</p>
-		<P>加入小组数量:{{ info.groups_count }}</P>
-		<p>参加活动数量:{{ info.activities_count }}</p>
-		<P>历史参加活动数量:{{ info.history_activities_count }}</P>
-	{% endfor %}
-</div>
-<div><a href="/relationship/{{ userid }}/follows/">我的关注</a></div>
-<div><a href="/relationship/{{ userid }}/fans/">我的粉丝</a></div>
-<div><a href="/note/user-{{ userid }}/">我的笔记</a></div>
-<div><a href="/note/user-{{ userid }}/fond/">我收藏的笔记</a></div>
-<div><a href="/group/user-{{ userid }}/">我的小组</a></div>
-<div><a>我的活动</a></div>
-</body>
-</html>
+{% extends 'top_menu.html' %}
+{% block title %}首页-学聊{% endblock %}
+{% block content %}
+{% endblock %}

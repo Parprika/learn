@@ -1,0 +1,73 @@
+<div class="header">
+	<div class="user-img">
+		<a>
+			<img src="/static/img/default_head.jpg">
+		</a>
+	</div>
+	<div class="user-info">
+		<a>{{ data.info.username }}</a>
+		<ul>
+			<li><a>{{ data.info.gender }}</a></li>
+		</ul>
+		<ul>
+			<li><a>{{ data.info.institute }}</a></li>
+		</ul>
+		<ul>
+			<li><a>{{ data.info.major }}</a></li>
+		</ul>
+		<ul>
+			<li><a>{{ data.info.native_place }}</a></li>
+		</ul>
+	</div>
+	<div class="follow">
+		{% if data.relationship == 'friend' %}
+			<button class="layui-btn layui-btn-normal layui-btn-radius" id="cancel-follow">相互关注</button>
+		{% elif data.relationship == 'follow' %}
+			<button class="layui-btn layui-btn-normal layui-btn-radius" id="cancel-follow">已关注</button>
+		{% elif data.relationship == 'not_follow' %}
+			<button class="layui-btn layui-btn-normal layui-btn-radius" id="follow">关注</button>
+		{% endif %}
+	</div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#follow').click(function () {
+            $.ajax({
+                url: '/follow/',
+                type: 'POST',
+                data: {
+                    'followid': {{ data.info.userid }}
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 'success') {
+                        location.reload();
+                    } else if (obj.status == 'fail') {
+                        alert(obj.data);
+                    } else if (obj.status == 'unauthorized') {
+                        location.href = '/login/';
+                    }
+                }
+            });
+        });
+        $('#cancel-follow').click(function () {
+            $.ajax({
+                url: '/cancel_follow/',
+                type: 'POST',
+                data: {
+                    'followid': {{ data.info.userid }}
+                },
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 'success') {
+                        location.reload();
+                    } else if (obj.status == 'fail') {
+                        alert(obj.data);
+                    } else if (obj.status == 'unauthorized') {
+                        location.href = '/login/';
+                    }
+                }
+            });
+        });
+    });
+</script>
