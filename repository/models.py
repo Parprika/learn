@@ -107,8 +107,15 @@ class GroupMembers(models.Model):
 	relationship_id = models.BigAutoField(primary_key=True)
 	group = models.ForeignKey(to='Groups', to_field='groupid', on_delete='CASCADE', verbose_name='小组')
 	member = models.ForeignKey(to='UserInfo', to_field='userid', on_delete='CASCADE', verbose_name='成员')
+	identity = models.ForeignKey(to='MemberIdentity', to_field='identity_id', default='1', on_delete='CASCADE',
+								 verbose_name='身份')
 	integral = models.IntegerField(default=0, verbose_name='获得积分')
 	add_time = models.DateTimeField(auto_now_add=True, verbose_name='加入时间')
+
+
+class MemberIdentity(models.Model):
+	identity_id = models.BigAutoField(primary_key=True)
+	identity_name = models.CharField(max_length=32, verbose_name='身份')
 
 
 class GroupRequest(models.Model):
@@ -120,7 +127,7 @@ class GroupRequest(models.Model):
 								  verbose_name='发起人')
 	target_user = models.ForeignKey(to='UserInfo', to_field='userid', on_delete='CASCADE', related_name='target',
 									verbose_name='对象')
-	target_group = models.ForeignKey(to='Groups', to_field='groupid', on_delete='CASCADE', verbose_name='目标小组')
+	target_group = models.CharField(max_length=32, verbose_name='目标小组')
 	request_type = models.ForeignKey(to='RequestType', to_field='request_id', on_delete='CASCADE', verbose_name='请求类型')
 	request_status = models.ForeignKey(to='RequestStatus', to_field='status_id', on_delete='CASCADE',
 									   verbose_name='请求状态')
@@ -149,7 +156,7 @@ class Activities(models.Model):
 	"""
 	activity_id = models.BigAutoField(primary_key=True)
 	activity_request = models.TextField(verbose_name='活动内容')
-	start_time = models.DateTimeField(auto_now_add=True, verbose_name='开始时间')
+	start_time = models.DateTimeField(verbose_name='开始时间')
 	end_time = models.DateTimeField(verbose_name='结束时间')
 	place = models.CharField(max_length=128, verbose_name='活动地点')
 	sign_count = models.IntegerField(default=0, verbose_name='打卡数量')
