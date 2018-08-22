@@ -1,5 +1,5 @@
 {% extends 'top_menu.html' %}
-{% block title %}{{ data.info.username }} - 学聊{% endblock %}
+{% block title %}{{ data.info.username }} - LEARN{% endblock %}
 {% block css %}
 	<link rel="stylesheet" href="/static/css/style.css">
 	<script src="/static/js/jquery-1.12.4.js"></script>
@@ -10,29 +10,52 @@
 		<div class="layui-tab layui-tab-brief">
 			<ul class="layui-tab-title">
 				<li class="user-note  layui-this">笔记<span class="badge">{{ data.note_count }}</span></li>
-				<li class="user-fond">收藏<span class="badge">{{ data.info.fond_notes_count }}</span></li>
-				<li class="user-group">小组<span class="badge">{{ data.info.groups_count }}</span></li>
-				<li class="user-follow">关注<span class="badge">{{ data.info.follow_count }}</span></li>
-				<li class="user-fans">粉丝<span class="badge">{{ data.info.fans_count }}</span></li>
+				<li class="user-fond">收藏<span class="badge">{{ data.fond_count }}</span></li>
+				<li class="user-activity">活动<span class="badge">{{ data.activity_count }}</span></li>
+				<li class="user-follow">关注<span class="badge">{{ data.follow_count }}</span></li>
+				<li class="user-fans">粉丝<span class="badge">{{ data.fans_count }}</span></li>
 			</ul>
 		</div>
-		{% if notes %}
-			{% for note in notes %}
-				<p>
-					<a href="/n/{{ note.noteid }}/">标题:{{ note.title }}-</a>
-					<a>作者:{{ note.note_user.username }}-</a>
-					<a>简介:{{ note.summary }}-</a>
-					<a>阅读权限:{{ note.readlimit.limit_type }}-</a>
-					<a>笔记标签:{{ note.notetag.notetag_name }}-</a>
-					<a>创建时间:{{ note.create_time|date:"Y-m-d H:i:s" }}-</a>
-					<a>最后编辑时间:{{ note.last_edit_time|date:"Y-m-d H:i:s" }}-</a>
-					<a>阅读量:{{ note.read_count }}-</a>
-					<a>收藏量:{{ note.fond_count }}</a>
-				</p>
-			{% endfor %}
-		{% else %}
-			<p>无笔记</p>
-		{% endif %}
+		<table class="layui-table" lay-even="" lay-skin="nob">
+			<colgroup>
+				<col width="120">
+				<col width="100">
+				<col width="80">
+				<col width="80">
+				<col width="150">
+				<col>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>标题</th>
+				<th>标签</th>
+				<th>收藏</th>
+				<th>编辑时间</th>
+				<th>简介</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% if notes %}
+				{% for note in notes %}
+					<tr>
+						<td><a href="/n/{{ note.noteid }}/">{{ note.title }}</a></td>
+						<td>{{ note.notetag.notetag_name }}</td>
+						<td>{{ note.userfondnotes_set.count }}</td>
+						<td>{{ note.last_edit_time|date:"Y-m-d H:i:s" }}</td>
+						<td>{{ note.summary }}</td>
+					</tr>
+				{% endfor %}
+			{% else %}
+				<tr>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+			{% endif %}
+			</tbody>
+		</table>
 	</div>
 {% endblock %}
 {% block script %}

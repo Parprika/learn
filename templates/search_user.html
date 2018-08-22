@@ -1,0 +1,88 @@
+{% extends 'top_menu.html' %}
+{% load filter %}
+{% block title %}
+	查找用户 - LEARN
+{% endblock %}
+{% block css %}
+	<link rel="stylesheet" href="/static/css/style.css">
+{% endblock %}
+{% block content %}
+	<div class="main card">
+		<div class="layui-card-header">
+			{% if kwargs.keyword %}
+				<input id="keyword" style="float: left; width: 625px" autocomplete="off" placeholder="请输入搜索关键词"
+					   class="layui-input"
+					   type="text" value="{{ kwargs.keyword }}">
+			{% else %}
+				<input id="keyword" style="float: left; width: 625px" autocomplete="off" placeholder="请输入搜索关键词"
+					   class="layui-input"
+					   type="text">
+			{% endif %}
+			<button id="search-note" style="float:right;" class="layui-btn layui-btn-normal">搜索</button>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-tab layui-tab-brief">
+				<ul class="layui-tab-title">
+					<li id="tag-note">笔记</li>
+					<li id="tag-user" class="layui-this">用户</li>
+					<li id="tag-activity">活动</li>
+				</ul>
+			</div>
+			<div>
+				<table class="layui-table" lay-even="" lay-skin="nob">
+					<colgroup>
+						<col width="150">
+						<col width="100">
+						<col width="80">
+						<col width="80">
+						<col width="80">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>id</th>
+						<th>昵称</th>
+						<th>性别</th>
+						<th>笔记</th>
+						<th>活动</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% if users %}
+						{% for user in users %}
+							<tr>
+								<td>{{ user.userid }}</td>
+								<td><a href="/u/{{ user.userid }}/note/">{{ user.username }}</a></td>
+								<td>{{ user.gender }}</td>
+								<td><a href="/u/{{ user.userid }}/note/">{{ user.notes_set.count }}</a></td>
+								<td><a href="/u/{{ user.userid }}/activity/">{{ user.activities_set.count }}</a></td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+	<script src="/static/js/jquery-1.12.4.js"></script>
+	{% include 'search_script.html' %}
+	<script type="text/javascript">
+        $(function () {
+            $('#search-note').click(function () {
+                var keyword = $('#keyword').val();
+                if (keyword == "") {
+                    location.reload();
+                }
+                location.href = '/search/u/?keyword=' + keyword;
+            });
+        });
+	</script>
+{% endblock %}

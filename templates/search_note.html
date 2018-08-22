@@ -1,0 +1,104 @@
+{% extends 'top_menu.html' %}
+{% load filter %}
+{% block title %}
+	查找笔记 - LEARN
+{% endblock %}
+{% block css %}
+	<link rel="stylesheet" href="/static/css/style.css">
+{% endblock %}
+{% block content %}
+	<div class="main card">
+		<div class="layui-card-header">
+			{% if kwargs.keyword %}
+				<input id="keyword" style="float: left; width: 625px" autocomplete="off" placeholder="请输入搜索关键词"
+					   class="layui-input"
+					   type="text" value="{{ kwargs.keyword }}">
+			{% else %}
+				<input id="keyword" style="float: left; width: 625px" autocomplete="off" placeholder="请输入搜索关键词"
+					   class="layui-input"
+					   type="text">
+			{% endif %}
+			<button id="search-note" style="float:right;" class="layui-btn layui-btn-normal">搜索</button>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-tab layui-tab-brief">
+				<ul class="layui-tab-title">
+					<li id="tag-note" class="layui-this">笔记</li>
+					<li id="tag-user">用户</li>
+					<li id="tag-activity">活动</li>
+				</ul>
+			</div>
+			<div class="condition">
+				<div>
+					<strong>标签</strong>
+					{% filter_all kwargs.keyword kwargs 'n' %}
+					{% filter_tag kwargs.keyword tags kwargs 'n' %}
+				</div>
+				<div>
+					<strong>排序</strong>
+					{% filter_sort kwargs.keyword sort_select kwargs 'n' %}
+				</div>
+			</div>
+			<div>
+				<table class="layui-table" lay-even="" lay-skin="nob">
+					<colgroup>
+						<col width="150">
+						<col width="100">
+						<col width="80">
+						<col width="80">
+						<col width="150">
+						<col>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>标题</th>
+						<th>作者</th>
+						<th>标签</th>
+						<th>收藏</th>
+						<th>编辑时间</th>
+						<th>简介</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% if notes %}
+						{% for note in notes %}
+							<tr>
+								<td><a href="/n/{{ note.noteid }}/">{{ note.title }}</a></td>
+								<td><a href="/u/{{ note.note_user.userid }}/note/">{{ note.note_user.username }}</a></td>
+								<td>{{ note.notetag.notetag_name }}</td>
+								<td>{{ note.userfondnotes_set.count }}</td>
+								<td>{{ note.last_edit_time|date:"Y-m-d H:i:s" }}</td>
+								<td>{{ note.summary }}</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+	<script src="/static/js/jquery-1.12.4.js"></script>
+	{% include 'search_script.html' %}
+	<script type="text/javascript">
+        $(function () {
+            $('#search-note').click(function () {
+                var keyword = $('#keyword').val();
+                if (keyword == "") {
+                    location.reload();
+                }
+                location.href = '/search/n/?keyword=' + keyword;
+            });
+        });
+	</script>
+{% endblock %}

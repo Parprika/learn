@@ -1,6 +1,6 @@
 {% extends 'top_menu.html' %}
 {% block title %}
-	{{ data.username }} - 学聊
+	{{ data.username }} - LEARN
 {% endblock %}
 {% block css %}
 	<link rel="stylesheet" href="/static/css/style.css">
@@ -12,26 +12,53 @@
 		<div class="layui-tab layui-tab-brief">
 			<ul class="layui-tab-title">
 				<li class="user-note">笔记<span class="badge">{{ data.note_count }}</span></li>
-				<li class="user-fond">收藏<span class="badge">{{ data.info.fond_notes_count }}</span></li>
-				<li class="user-group">小组<span class="badge">{{ data.info.groups_count }}</span></li>
-				<li class="user-follow layui-this">关注<span class="badge">{{ data.info.follow_count }}</span></li>
-				<li class="user-fans">粉丝<span class="badge">{{ data.info.fans_count }}</span></li>
+				<li class="user-fond">收藏<span class="badge">{{ data.fond_count }}</span></li>
+				<li class="user-activity">活动<span class="badge">{{ data.activity_count }}</span></li>
+				<li class="user-follow layui-this">关注<span class="badge">{{ data.follow_count }}</span></li>
+				<li class="user-fans">粉丝<span class="badge">{{ data.fans_count }}</span></li>
 			</ul>
 		</div>
 		<div>
-			{% if follows %}
-				{% for follow in follows %}
-					<div>
-						<a>{{ follow.user.userid }}</a>
-						<a href="/u/{{ follow.user.userid }}/note/">{{ follow.user.username }}</a>
-						<a>{{ follow.user.gender }}</a>
-						<a>{{ follow.user.institute }}</a>
-						<a>{{ follow.user.major }}</a>
-					</div>
-				{% endfor %}
-			{% else %}
-				<P>nothing</P>
-			{% endif %}
+			<table class="layui-table" lay-even="" lay-skin="nob">
+				<colgroup>
+					<col width="150">
+					<col width="100">
+					<col width="80">
+					<col width="80">
+					<col width="80">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>id</th>
+					<th>昵称</th>
+					<th>性别</th>
+					<th>笔记</th>
+					<th>活动</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% if follows %}
+					{% for follow in follows %}
+						<tr>
+							<td>{{ follow.user.userid }}</td>
+							<td><a href="/u/{{ follow.user.userid }}/note/">{{ follow.user.username }}</a></td>
+							<td>{{ follow.user.gender }}</td>
+							<td><a href="/u/{{ follow.user.userid }}/note/">{{ follow.user.notes_set.count }}</a></td>
+							<td>
+								<a href="/u/{{ follow.user.userid }}/activity/">{{ follow.user.activities_set.count }}</a>
+							</td>
+						</tr>
+					{% endfor %}
+				{% else %}
+					<tr>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+				{% endif %}
+				</tbody>
+			</table>
 		</div>
 	</div>
 {% endblock %}

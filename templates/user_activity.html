@@ -1,0 +1,71 @@
+{% extends 'top_menu.html' %}
+{% block title %}
+	{{ data.username }} - LEARN
+{% endblock %}
+{% block css %}
+	<link rel="stylesheet" href="/static/css/style.css">
+	<script src="/static/js/jquery-1.12.4.js"></script>
+{% endblock %}
+{% block content %}
+	{% include 'user_info_tag.html' %}
+	<div class="main">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="user-note">笔记<span class="badge">{{ data.note_count }}</span></li>
+				<li class="user-fond">收藏<span class="badge">{{ data.fond_count }}</span></li>
+				<li class="user-activity layui-this">活动<span class="badge">{{ data.activity_count }}</span></li>
+				<li class="user-follow">关注<span class="badge">{{ data.follow_count }}</span></li>
+				<li class="user-fans">粉丝<span class="badge">{{ data.fans_count }}</span></li>
+			</ul>
+		</div>
+		<div>
+		<table class="layui-table" lay-even="" lay-skin="nob">
+					<colgroup>
+						<col width="150">
+						<col width="100">
+						<col width="150">
+						<col width="80">
+						<col width="80">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>活动名称</th>
+						<th>组织者</th>
+						<th>活动地点</th>
+						<th>标签</th>
+						<th>状态</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% if activities %}
+						{% for activity in activities %}
+							<tr>
+								<td><a href="/a/{{ activity.activity.activity_id }}/">{{ activity.activity.activity_name }}</a></td>
+								<td><a href="/u/{{ activity.activity.leader_id }}/note/">{{ activity.activity.leader.username }}</a></td>
+								<td>{{ activity.activity.place }}</td>
+								<td>{{ activity.activity.activity_tag.tag_name }}</td>
+								{% if activity.activity.status == 1 %}
+									<td>已结束</td>
+								{% else %}
+									<td>正在进行</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					{% endif %}
+					</tbody>
+				</table>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+{% include 'tag_script.html' %}
+{% endblock %}

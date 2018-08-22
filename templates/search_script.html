@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    $(function () {
+        $('#tag-note').click(function () {
+            var keyword = $('#keyword').val();
+            if (keyword == "") {
+                location.href = '/search/n/';
+			} else {
+                location.href = '/search/n/?keyword=' + keyword;
+			}
+        });
+        $('#tag-user').click(function () {
+            var keyword = $('#keyword').val();
+            if (keyword == "") {
+                location.href = '/search/u/'
+			} else {
+                location.href = '/search/u/?keyword=' + keyword;
+			}
+        });
+        $('#tag-activity').click(function () {
+            var keyword = $('#keyword').val();
+            if (keyword == "") {
+                location.href = '/search/a/';
+			} else {
+                location.href = '/search/a/?keyword=' + keyword;
+			}
+        });
+    });
+</script>

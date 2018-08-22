@@ -15,46 +15,22 @@
 	<div class="layui-header">
 		<a class="layui-logo" href="/index/">LEARN</a>
 		<ul class="layui-nav layui-layout-left">
-		<li class="layui-nav-item"><a href="/index/">首页</a></li>
+			<li class="layui-nav-item"><a href="/index/">首页</a></li>
 			{% if data.userid %}
 				<li class="layui-nav-item"><a href="/n/new/">写笔记</a></li>
-				<li class="layui-nav-item"><a href="#">我的小组</a></li>
+				<li class="layui-nav-item"><a href="/a/new/">新建活动</a></li>
 			{% else %}
 				<li class="layui-nav-item"><a href="/login/">写笔记</a></li>
-				<li class="layui-nav-item"><a href="/login/">我的小组</a></li>
+				<li class="layui-nav-item"><a href="/login/">新建活动</a></li>
 			{% endif %}
 		</ul>
 		<ul class="layui-nav layui-layout-right">
 			<li class="layui-nav-item">
-				<button class="layui-btn layui-btn-primary layui-btn-radius"><img class="layui-nav-img"
-																				  src="/static/img/search.png">click here to search&nbsp;&nbsp;&nbsp;
+				<button id="search-button" class="layui-btn layui-btn-primary layui-btn-radius"><img
+						class="layui-nav-img"
+						src="/static/img/search.png">click here to search&nbsp;&nbsp;&nbsp;
 				</button>
 			</li>
-			{% if data.userid %}
-				<li class="layui-nav-item">
-					{% if data.message %}
-						<a href="/u/{{ data.userid }}/message/">申请<span
-								class="layui-badge">{{ data.message.count }}</span></a>
-					{% else %}
-						<a href="/u/{{ data.userid }}/message/">申请</a>
-					{% endif %}
-				</li>
-				<li class="layui-nav-item">
-					{% if data.notice %}
-						<a href="/u/{{ data.userid }}/notice/">消息<span
-								class="layui-badge">{{ data.notice.count }}</span></a>
-					{% else %}
-						<a href="/u/{{ data.userid }}/notice/">消息</a>
-					{% endif %}
-				</li>
-			{% else %}
-				<li class="layui-nav-item">
-					<a href="/login/">申请</a>
-				</li>
-				<li class="layui-nav-item">
-					<a href="/login/">消息</a>
-				</li>
-			{% endif %}
 			<li class="layui-nav-item">
 				{% if data.userid %}
 					<a href="/u/{{ data.userid }}/note/">
@@ -75,6 +51,14 @@
 		{% block content %}{% endblock %}
 	</div>
 </div>
-{% block script %}{% endblock %}
+<script type="text/javascript">
+    $(function () {
+        $('#search-button').click(function () {
+            location.href = '/search/n/';
+        });
+    });
+</script>
+{% block script %}
+{% endblock %}
 </body>
 </html>
