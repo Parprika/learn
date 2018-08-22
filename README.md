@@ -9,7 +9,7 @@
 -搜索模块:支持笔记,用户,活动全局全文搜索.\<br>
 
 ## 运行
-修改learn/settings 修改数据库(mysql)配置,如下:\<br>
+修改learn/settings 修改数据库(mysql)配置,如下:<br>
 
 DATABASES = {\<br>
 	'default': {\<br>
