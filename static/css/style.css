@@ -107,6 +107,73 @@ select.choice {
     left: 5px;
 }
 
+.condition a {
+    display: inline-block;
+    padding: 2px 2px;
+    margin: 2px;
+}
+
+.condition a.active {
+    color: #008ead;
+}
+
+.note {
+	margin: 0 auto;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	position: relative;
+}
+.note-hd h2 {
+	font-size: 24px;
+	font-weight: 700;
+	color: #000;
+	width: 500px;
+}
+.note-hd h5 {
+	font-size: 14px;
+	font-weight: 600;
+	color: gray;
+	margin-top: 20px;
+}
+#fond-button {
+	display: block;
+	position: absolute;
+	top: 25px;
+	left: 620px;
+}
+#cancel-fond-button {
+	display: block;
+	position: absolute;
+	top: 25px;
+	left: 620px;
+}
+#edit-button {
+	display: block;
+	position: absolute;
+	top: 25px;
+	left: 550px;
+}
+#delete-button {
+	display: block;
+	position: absolute;
+	top: 25px;
+	left: 620px;
+}
+.note-bd p {
+	margin-top: 20px;
+	font-size: 14px;
+	line-height: 30px;
+	text-indent: 2em;
+	color: #333;
+}
+.note-fd span {
+	font-size: 14px;
+	line-height: 30px;
+	color: #969696;
+}
+
+
+
 .hide {
     display: none;
 }
