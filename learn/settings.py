@@ -38,7 +38,8 @@ INSTALLED_APPS = [
 	'web.apps.WebConfig',
 	'repository',
 	'note',
-	'group',
+	'search',
+	'activity',
 ]
 
 MIDDLEWARE = [

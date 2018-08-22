@@ -29,7 +29,7 @@ urlpatterns = [
 	path('n/', include('note.urls')),
 	path('upload/', kindeditor.upload),
 	re_path('media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
-	path('g/', include('group.urls')),
+	path('a/', include('activity.urls')),
 	path('search/', include('search.urls')),
 	path('follow/', relationship.follow),
 	path('cancel_follow/', relationship.cancel_follow),
@@ -39,6 +39,5 @@ urlpatterns = [
 	re_path('u/(?P<userid>\d+)/fond/', views.user_fond),
 	re_path('u/(?P<userid>\d+)/follows/', views.user_follows),
 	re_path('u/(?P<userid>\d+)/fans/', views.user_fans),
-	re_path('u/(?P<userid>\d+)/group/', views.user_group),
 	re_path('u/(?P<userid>\d+)/activity/', views.user_activity),
 ]
