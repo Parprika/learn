@@ -24,6 +24,7 @@ from utils import relationship
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('login/', views.login),
+	path('register/', views.register),
 	path('logout/', views.logout),
 	path('index/', views.index),
 	path('n/', include('note.urls')),
@@ -33,8 +34,6 @@ urlpatterns = [
 	path('search/', include('search.urls')),
 	path('follow/', relationship.follow),
 	path('cancel_follow/', relationship.cancel_follow),
-	re_path('u/(?P<userid>\d+)/message/', views.message),
-	re_path('u/(?P<userid>\d+)/notice/', views.notice),
 	re_path('u/(?P<userid>\d+)/note/', views.user_note),
 	re_path('u/(?P<userid>\d+)/fond/', views.user_fond),
 	re_path('u/(?P<userid>\d+)/follows/', views.user_follows),
