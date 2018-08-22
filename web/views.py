@@ -77,6 +77,7 @@ def user_note(request, userid):
 			notes = models.Notes.objects.filter(note_user=userid)
 		else:
 			notes = models.Notes.objects.filter(note_user=userid, readlimit='1')
+		notes = notes.order_by('-last_edit_time')
 		return render(request, 'user_note.html', {'data': data, 'notes': notes})
 
 
@@ -84,6 +85,7 @@ def user_fond(request, userid):
 	if request.method == 'GET':
 		data = Initialization(request, userid).get_all()
 		notes = models.UserFondNotes.objects.filter(userid=userid)
+		notes = notes.order_by('-fond_time')
 		return render(request, 'note_fond.html', {'data': data, 'notes': notes})
 
 
@@ -91,6 +93,7 @@ def user_follows(request, userid):
 	if request.method == 'GET':
 		data = Initialization(request, userid).get_all()
 		follows = models.UserFans.objects.filter(follower=userid)
+		follows = follows.order_by('-follow_time')
 		return render(request, 'follows.html', {'data': data, 'follows': follows})
 
 
@@ -98,6 +101,7 @@ def user_fans(request, userid):
 	if request.method == 'GET':
 		data = Initialization(request, userid).get_all()
 		fans = models.UserFans.objects.filter(user=userid)
+		fans = fans.order_by('-follow_time')
 		return render(request, 'fans.html', {'data': data, 'fans': fans})
 
 
@@ -105,4 +109,5 @@ def user_activity(request, userid):
 	if request.method == 'GET':
 		data = Initialization(request, userid).get_all()
 		activities = models.ActivityMembers.objects.filter(member=userid)
+		activities = activities.order_by('-add_time')
 		return render(request, 'user_activity.html', {'data': data, 'activities': activities})
