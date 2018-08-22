@@ -7,14 +7,6 @@ class Initialization:
 		self.userid = request.session.get('userid')
 		self.username = request.session.get('username')
 
-	def get_message(self):
-		message_obj = models.GroupRequest.objects.filter(request_status='1', target_user=self.userid)
-		return message_obj
-
-	def get_notice(self):
-		notice_obj = models.Notices.objects.filter(status='1', to_user=self.userid)
-		return notice_obj
-
 	def get_info(self):
 		info_obj = models.UserInfo.objects.get(userid=self.target_id)
 		return info_obj
@@ -25,6 +17,22 @@ class Initialization:
 		else:
 			note_count = models.Notes.objects.filter(note_user=self.target_id, readlimit='1').count()
 		return note_count
+
+	def get_fond_count(self):
+		fond_count = models.UserFondNotes.objects.filter(userid=self.target_id).count()
+		return fond_count
+
+	def get_follow_count(self):
+		follow_count = models.UserFans.objects.filter(follower_id=self.target_id).count()
+		return follow_count
+
+	def get_fans_count(self):
+		fans_count = models.UserFans.objects.filter(user_id=self.target_id).count()
+		return fans_count
+
+	def get_activity_count(self):
+		activity_count = models.ActivityMembers.objects.filter(member=self.target_id).count()
+		return activity_count
 
 	def get_relationship(self):
 		if self.userid == self.target_id:
@@ -45,8 +53,6 @@ class Initialization:
 			'userid': self.userid,
 			'username': self.username,
 			'note_count': self.get_note_count(),
-			'message': self.get_message(),
-			'notice': self.get_notice()
 		}
 		return ret
 
@@ -55,9 +61,11 @@ class Initialization:
 			'userid': self.userid,
 			'username': self.username,
 			'note_count': self.get_note_count(),
+			'fond_count': self.get_fond_count(),
+			'follow_count': self.get_follow_count(),
+			'fans_count': self.get_fans_count(),
+			'activity_count': self.get_activity_count(),
 			'relationship': self.get_relationship(),
 			'info': self.get_info(),
-			'message': self.get_message(),
-			'notice': self.get_notice()
 		}
 		return ret
